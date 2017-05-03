@@ -1,0 +1,23 @@
+{
+  "name": "the-mighty-button",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon --exec \"npm start\" -e \"js\"",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "axios": "^0.16.1",
+    "cors": "^2.8.3",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.2"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.1.3",
+    "eslint-plugin-import": "^2.2.0",
+    "nodemon": "^1.11.0"
+  }
+}
