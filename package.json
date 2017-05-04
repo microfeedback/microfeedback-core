@@ -1,23 +1,34 @@
 {
-  "name": "the-mighty-button",
+  "name": "micro-wishes",
+  "description": "The wishes microservice",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "files": [
+    "index.js"
+  ],
   "scripts": {
-    "start": "node index.js",
+    "start": "micro index.js",
     "dev": "nodemon --exec \"npm start\" -e \"js\"",
+    "test": "NODE_ENV=test ava",
+    "test:debug": "iron-node ./node_modules/ava/profile.js test.js",
     "lint": "eslint ."
   },
   "dependencies": {
     "axios": "^0.16.1",
-    "cors": "^2.8.3",
     "dotenv": "^4.0.0",
-    "express": "^4.15.2"
+    "micro": "^7.3.2",
+    "micro-cors": "^0.0.4"
   },
   "devDependencies": {
+    "ava": "^0.19.1",
     "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.1.3",
     "eslint-plugin-import": "^2.2.0",
-    "nodemon": "^1.11.0"
+    "moxios": "^0.4.0",
+    "nodemon": "^1.11.0",
+    "pify": "^2.3.0",
+    "request-promise": "^4.2.0",
+    "test-listen": "^1.0.2"
   }
 }
