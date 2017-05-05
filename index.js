@@ -18,7 +18,9 @@ const handleErrors = fn => async (req, res) => {
     if (['production', 'test'].indexOf(process.env.NODE_ENV) === -1 && err.stack) {
       console.error(err.stack);
     }
-    send(res, err.statusCode || 500, {
+    const status = err.statusCode || 500;
+    send(res, status, {
+      status,
       message: err.message,
     });
   }
@@ -30,8 +32,7 @@ const handleErrors = fn => async (req, res) => {
  *
  * GitHub is supported out of the box.
  */
-
-const GitHubBackend = ({ name, body }) => {
+const GitHubBackend = async ({ name, body }) => {
   const { GH_REPO, GH_TOKEN } = process.env;
   assert(GH_REPO, 'GH_REPO not set');
   assert(GH_TOKEN, 'GH_TOKEN not set');
@@ -39,22 +40,31 @@ const GitHubBackend = ({ name, body }) => {
   const URL = `https://api.github.com/repos/${GH_REPO}/issues`;
   const title = 'TODO';
   const fullBody = `Posted by ${name}: ${body}`;
-  return axios({
-    method: 'POST',
-    url: URL,
-    params: {
-      access_token: GH_TOKEN,
-    },
-    data: {
-      title,
-      body: fullBody,
-    },
-  });
+  try {
+    const { data } = await axios({
+      method: 'POST',
+      url: URL,
+      params: {
+        access_token: GH_TOKEN,
+      },
+      data: {
+        title,
+        body: fullBody,
+      },
+    });
+    return data;
+  } catch (err) {
+    const { status, data } = err.response;
+    throw new createError(status, data.message, err);
+  }
 };
 
 /**
  * Factory for a micro handler containing the main routing logic.
- * Takes a backend as its only input and returns a micro handler.
+ *
+ * @param Function backend: The backend to use for the service. The backend receives the
+ *  parsed input JSON from the client.
+ * @param Object attributes: Optional attributes about the backend, e.g. name, version.
  */
 const makeService = (backend, attributes) => handleErrors(cors(async (req, res) => {
   if (req.method === 'GET') {
@@ -71,12 +81,9 @@ const makeService = (backend, attributes) => handleErrors(cors(async (req, res) 
     send(res, 200, response);
   } else if (req.method === 'POST') {
     const { name, body } = await json(req);
-    try {
-      const { data } = await backend({ name, body });
-      send(res, 201, data);
-    } catch (err) {
-      throw new createError(err.response.status, err.response.data);
-    }
+    // NOTE: Error handling is handled by the backend
+    const { data } = await backend({ name, body });
+    send(res, 201, data);
   } else {
     throw new createError(405, `Method ${req.method} not allowed.`);
   }

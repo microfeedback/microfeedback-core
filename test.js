@@ -28,8 +28,8 @@ const request = (options) => {
 /**
  * Make a mocked service.
  */
-const maketestService = async () => {
-  const handler = makeService(MockBackend, { name: 'Mock', version: '0.1.0' });
+const maketestService = async (backend) => {
+  const handler = makeService(backend || MockBackend, { name: 'test-backend', version: '0.1.0' });
   const service = micro(handler);
   const url = await listen(service);
   return { service, url };
@@ -45,7 +45,7 @@ test('GET: success', async (t) => {
 test('GET: returns backend attributes', async (t) => {
   const { url } = await maketestService();
   const { body } = await request({ uri: url });
-  t.deepEqual(body.backend, { name: 'Mock', version: '0.1.0' });
+  t.deepEqual(body.backend, { name: 'test-backend', version: '0.1.0' });
 });
 
 
@@ -57,6 +57,17 @@ test('POST: success', async (t) => {
 });
 
 test.todo('POST: no issue body given');
+
+test('POST: error thrown by backend', async (t) => {
+  const ErrorBackend = () => {
+    throw new micro.createError(400, 'Error thrown by backend');
+  };
+  const { url } = await maketestService(ErrorBackend);
+  const payload = { name: 'steve', body: 'wat' };
+  const { body, statusCode } = await request({ uri: url, method: 'POST', body: payload, simple: false });
+  t.is(statusCode, 400);
+  t.deepEqual(body, { status: 400, message: 'Error thrown by backend' });
+});
 
 test('PUT not supported', async (t) => {
   const { url } = await maketestService();
