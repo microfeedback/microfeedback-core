@@ -3,6 +3,7 @@ const assert = require('assert');
 const { send, json, createError } = require('micro');
 const microCors = require('micro-cors');
 const axios = require('axios');
+const pkg = require('./package.json');
 
 const cors = microCors({ allowMethods: ['GET', 'POST', 'OPTIONS'] });
 
@@ -55,12 +56,19 @@ const GitHubBackend = ({ name, body }) => {
  * Factory for a micro handler containing the main routing logic.
  * Takes a backend as its only input and returns a micro handler.
  */
-const makeService = backend => handleErrors(cors(async (req, res) => {
+const makeService = (backend, attributes) => handleErrors(cors(async (req, res) => {
   if (req.method === 'GET') {
-    send(res, 200, {
+    const response = {
       message: 'Welcome to the wishes API. Send a POST ' +
               'request to this URL to post a new issue.',
-    });
+      core: {
+        version: pkg.version,
+      },
+    };
+    if (attributes) {
+      response.backend = attributes;
+    }
+    send(res, 200, response);
   } else if (req.method === 'POST') {
     const { name, body } = await json(req);
     try {

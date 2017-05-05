@@ -2,6 +2,7 @@ const test = require('ava');
 const micro = require('micro');
 const listen = require('test-listen');
 const rp = require('request-promise');
+const pkg = require('./package.json');
 
 const { makeService } = require('./');
 
@@ -28,7 +29,7 @@ const request = (options) => {
  * Make a mocked service.
  */
 const maketestService = async () => {
-  const handler = makeService(MockBackend);
+  const handler = makeService(MockBackend, { name: 'Mock', version: '0.1.0' });
   const service = micro(handler);
   const url = await listen(service);
   return { service, url };
@@ -36,8 +37,15 @@ const maketestService = async () => {
 
 test('GET: success', async (t) => {
   const { url } = await maketestService();
-  const response = await request({ uri: url });
-  t.is(response.statusCode, 200);
+  const { body, statusCode } = await request({ uri: url });
+  t.is(statusCode, 200);
+  t.is(body.core.version, pkg.version);
+});
+
+test('GET: returns backend attributes', async (t) => {
+  const { url } = await maketestService();
+  const { body } = await request({ uri: url });
+  t.deepEqual(body.backend, { name: 'Mock', version: '0.1.0' });
 });
 
 
