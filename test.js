@@ -4,7 +4,7 @@ const listen = require('test-listen');
 const rp = require('request-promise');
 const pkg = require('./package.json');
 
-const { makeService } = require('./');
+const makeService = require('./');
 
 
 /* Mocked GitHub strategy */
@@ -56,7 +56,12 @@ test('POST: success', async (t) => {
   t.is(response.statusCode, 201);
 });
 
-test.todo('POST: no issue body given');
+test('POST: no issue body given', async (t) => {
+  const { url } = await maketestService();
+  const body = { name: 'steve' };
+  const response = await request({ uri: url, method: 'POST', body, simple: false });
+  t.is(response.statusCode, 429);
+});
 
 test('POST: error thrown by backend', async (t) => {
   const ErrorBackend = () => {

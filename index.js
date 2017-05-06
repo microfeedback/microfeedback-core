@@ -1,8 +1,5 @@
-require('dotenv').config();
-const assert = require('assert');
 const { send, json, createError } = require('micro');
 const microCors = require('micro-cors');
-const axios = require('axios');
 const pkg = require('./package.json');
 
 const cors = microCors({ allowMethods: ['GET', 'POST', 'OPTIONS'] });
@@ -26,39 +23,6 @@ const handleErrors = fn => async (req, res) => {
   }
 };
 
-/* Backends for handling feedback. A backend is a function that
- * takes the input for an issue and returns a Promise (usually
- * an axios response).
- *
- * GitHub is supported out of the box.
- */
-const GitHubBackend = async ({ name, body }) => {
-  const { GH_REPO, GH_TOKEN } = process.env;
-  assert(GH_REPO, 'GH_REPO not set');
-  assert(GH_TOKEN, 'GH_TOKEN not set');
-
-  const URL = `https://api.github.com/repos/${GH_REPO}/issues`;
-  const title = 'TODO';
-  const fullBody = `Posted by ${name}: ${body}`;
-  try {
-    const { data } = await axios({
-      method: 'POST',
-      url: URL,
-      params: {
-        access_token: GH_TOKEN,
-      },
-      data: {
-        title,
-        body: fullBody,
-      },
-    });
-    return data;
-  } catch (err) {
-    const { status, data } = err.response;
-    throw new createError(status, data.message, err);
-  }
-};
-
 /**
  * Factory for a micro handler containing the main routing logic.
  *
@@ -66,11 +30,11 @@ const GitHubBackend = async ({ name, body }) => {
  *  parsed input JSON from the client.
  * @param Object attributes: Optional attributes about the backend, e.g. name, version.
  */
-const makeService = (backend, attributes) => handleErrors(cors(async (req, res) => {
+module.exports = (backend, attributes) => handleErrors(cors(async (req, res) => {
   if (req.method === 'GET') {
     const response = {
       message: 'Welcome to the wishes API. Send a POST ' +
-              'request to this URL to post a new issue.',
+              'request to this URL to post a new wish.',
       core: {
         version: pkg.version,
       },
@@ -80,14 +44,13 @@ const makeService = (backend, attributes) => handleErrors(cors(async (req, res) 
     }
     send(res, 200, response);
   } else if (req.method === 'POST') {
-    const { name, body } = await json(req);
-    // NOTE: Error handling is handled by the backend
-    const { data } = await backend({ name, body });
+    const input = await json(req);
+    if (!input.body) {
+      throw new createError(429, '"body" is required in request payload');
+    }
+    const data = await backend(input);
     send(res, 201, data);
   } else {
     throw new createError(405, `Method ${req.method} not allowed.`);
   }
 }));
-
-module.exports = makeService(GitHubBackend);
-Object.assign(module.exports, { makeService, GitHubBackend });
