@@ -33,13 +33,13 @@ const { createError } = require('micro');
 const wishes = require('micro-wishes');
 const sendEmail = require('./email-library');
 
-const EmailBackend = async ({ name, body }) => {
+const EmailBackend = async ({ name, body }, req, res) => {
   const email = process.env.FEEDBACK_EMAIL;  // where to receive feedback
   const subject = `[wishes] Feedback from ${name}`;
   const content = `${name} posted feedback on your app:
 
 ${body}
-  
+
 Cheers,
 The Wishes Robot`;
   try {
