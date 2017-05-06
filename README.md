@@ -22,7 +22,7 @@ yarn add micro-wishes
 
 The `micro-wishes` function is the only public API. It takes a *backend* function which contains the code user feedback (e.g. post a GitHub issue, send an email). The second argument, `attributes`, is an `Object` that describes the backend (e.g. `name`, `version`, `description`).
 
-The *backend* receives the parse client input which will contain--at a minimum--an entry named `body` with the feedback content.
+The first argument to the *backend* function is the parsed client input which will contain--at a minimum--an entry named `body` with the feedback content. The *backend* function also receives the request (`req`) and response (`res`) objects. See the [micro docs](https://github.com/zeit/micro) for more information about these objects.
 
 The `micro-wishes` function returns a [micro](https://github.com/zeit/micro) request handler.
 
@@ -79,6 +79,22 @@ npm start
 ## Backends
 
 - [micro-wishes-github](https://github.com/wishesjs/micro-wishes-github)
+
+## Development
+
+* Fork and clone this repo. `cd` into the project directory.
+* `yarn install`
+* To run tests: `npm test`
+* To run the example server with auto-reloading: `npm run dev`
+
+### Debugging in tests with iron-node
+
+Add `debugger` statements, then run the following:
+
+```
+yarn global add iron-node
+npm run test:debug
+```
 
 ## License
 
