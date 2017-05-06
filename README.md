@@ -1,5 +1,7 @@
 # micro-wishes
 
+[![Build Status](https://travis-ci.org/wishesjs/micro-wishes.svg?branch=master)](https://travis-ci.org/wishesjs/micro-wishes)
+
 Core library for building Wishes microservices.
 
 ## What is a Wishes microservice?
