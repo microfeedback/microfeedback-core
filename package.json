@@ -21,8 +21,8 @@
   "scripts": {
     "start": "micro example.js",
     "dev": "nodemon --exec \"npm start\" -e \"js\"",
-    "test": "NODE_ENV=test npm run lint && ava",
-    "test:debug": "iron-node ./node_modules/ava/profile.js test.js",
+    "test": "npm run lint && NODE_ENV=test ava",
+    "test:debug": "NODE_ENV=test iron-node ./node_modules/ava/profile.js test.js",
     "lint": "eslint ."
   },
   "dependencies": {

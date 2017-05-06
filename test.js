@@ -8,7 +8,7 @@ const makeService = require('./');
 
 
 /* Mocked GitHub strategy */
-const MockBackend = ({ name, body }) => Promise.resolve({ data: { name, body } });
+const MockBackend = ({ name, body }) => Promise.resolve({ name, body, message: 'testing' });
 
 /**
  * Thin wrapper around request-promise
@@ -48,12 +48,19 @@ test('GET: returns backend attributes', async (t) => {
   t.deepEqual(body.backend, { name: 'test-backend', version: '0.1.0' });
 });
 
-
 test('POST: success', async (t) => {
   const { url } = await maketestService();
   const body = { name: 'steve', body: 'wat' };
   const response = await request({ uri: url, method: 'POST', body });
   t.is(response.statusCode, 201);
+});
+
+test('POST: response format', async (t) => {
+  const { url } = await maketestService();
+  const payload = { name: 'steve', body: 'wat' };
+  const { body } = await request({ uri: url, method: 'POST', body: payload });
+  t.deepEqual(body.result, { name: 'steve', body: 'wat', message: 'testing' });
+  t.deepEqual(body.attributes, { name: 'test-backend', version: '0.1.0' });
 });
 
 test('POST: no issue body given', async (t) => {

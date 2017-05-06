@@ -48,8 +48,12 @@ module.exports = (backend, attributes) => handleErrors(cors(async (req, res) => 
     if (!input.body) {
       throw new createError(429, '"body" is required in request payload');
     }
-    const data = await backend(input, req, res);
-    send(res, 201, data);
+    const result = await backend(input, req, res);
+    const responseData = { result };
+    if (attributes) {
+      responseData.attributes = attributes;
+    }
+    send(res, 201, responseData);
   } else {
     throw new createError(405, `Method ${req.method} not allowed.`);
   }
