@@ -60,7 +60,7 @@ test('POST: response format', async (t) => {
   const payload = { name: 'steve', body: 'wat' };
   const { body } = await request({ uri: url, method: 'POST', body: payload });
   t.deepEqual(body.result, { name: 'steve', body: 'wat', message: 'testing' });
-  t.deepEqual(body.attributes, { name: 'test-backend', version: '0.1.0' });
+  t.deepEqual(body.backend, { name: 'test-backend', version: '0.1.0' });
 });
 
 test('POST: no issue body given', async (t) => {

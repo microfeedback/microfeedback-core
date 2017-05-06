@@ -51,7 +51,7 @@ module.exports = (backend, attributes) => handleErrors(cors(async (req, res) => 
     const result = await backend(input, req, res);
     const responseData = { result };
     if (attributes) {
-      responseData.attributes = attributes;
+      responseData.backend = attributes;
     }
     send(res, 201, responseData);
   } else {
