@@ -1,5 +1,6 @@
 const { send, json, createError } = require('micro');
 const microCors = require('micro-cors');
+const visualize = require('micro-visualize');
 const pkg = require('./package.json');
 
 const cors = microCors({ allowMethods: ['GET', 'POST', 'OPTIONS'] });
@@ -30,7 +31,7 @@ const handleErrors = fn => async (req, res) => {
  *  parsed input JSON from the client.
  * @param Object attributes: Optional attributes about the backend, e.g. name, version.
  */
-module.exports = (backend, attributes) => handleErrors(cors(async (req, res) => {
+module.exports = (backend, attributes) => visualize(handleErrors(cors(async (req, res) => {
   if (req.method === 'GET') {
     const response = {
       message: 'Welcome to the wishes API. Send a POST ' +
@@ -57,4 +58,4 @@ module.exports = (backend, attributes) => handleErrors(cors(async (req, res) => 
   } else {
     throw new createError(405, `Method ${req.method} not allowed.`);
   }
-}));
+})), process.env.NODE_ENV);
