@@ -13,7 +13,7 @@ const handleErrors = fn => async (req, res) => {
   try {
     return await fn(req, res);
   } catch (err) {
-    if (['production', 'test'].indexOf(process.env.NODE_ENV) === -1 && err.stack) {
+    if (process.env.NODE_ENV === 'dev' && err.stack) {
       console.error(err.stack);
     }
     const status = err.statusCode || 500;
