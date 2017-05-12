@@ -20,9 +20,9 @@ yarn add micro-wishes
 
 ## Usage
 
-The `micro-wishes` function is the only public API. It takes a *backend* function which contains the code user feedback (e.g. post a GitHub issue, send an email). The second argument, `attributes`, is an `Object` that describes the backend (e.g. `name`, `version`, `description`).
+The `micro-wishes` function is the only public API. It takes a *backend* function which contains the code to handle user feedback (e.g. post a GitHub issue, send an email) sent from a client. The second argument, `attributes`, is an `Object` that describes the backend (e.g. `name`, `version`, `description`).
 
-The first argument to the *backend* function is the parsed client input which will contain--at a minimum--an entry named `body` with the feedback content. The *backend* function also receives the request (`req`) and response (`res`) objects. See the [micro docs](https://github.com/zeit/micro) for more information about these objects.
+The first argument to the *backend* function is the parsed client input which will contain--at a minimum--an entry named `body` with the feedback content. The *backend* function also receives the request (`req`) and response (`res`) objects. See the [node http docs](https://nodejs.org/api/http.html) for more information about these objects.
 
 The `micro-wishes` function returns a [micro](https://github.com/zeit/micro) request handler.
 
