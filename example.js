@@ -1,4 +1,4 @@
-const wishes = require('./');
+const microfeedback = require('./');
 
 /**
  * An example backend that just logs to the console.
@@ -17,7 +17,7 @@ const ConsoleBackend = ({ name, body }) => {
   return Promise.resolve({ name, body });
 };
 
-module.exports = wishes(ConsoleBackend, {
+module.exports = microfeedback(ConsoleBackend, {
   name: 'console',
   version: '1.0.0',
 });

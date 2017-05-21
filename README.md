@@ -1,10 +1,10 @@
-# micro-wishes
+# microfeedback-core
 
-[![Build Status](https://travis-ci.org/wishesjs/micro-wishes.svg?branch=master)](https://travis-ci.org/wishesjs/micro-wishes)
+[![Build Status](https://travis-ci.org/microfeedback/microfeedback-core.svg?branch=master)](https://travis-ci.org/microfeedback/microfeedback-core)
 
-Core library for building Wishes microservices.
+Core library for building microfeedback backends.
 
-## What is a Wishes microservice?
+## What is a microfeedback backend?
 
 In short: an easily-deployable HTTP microservice for collecting user feedback about your apps.
 
@@ -13,35 +13,35 @@ In short: an easily-deployable HTTP microservice for collecting user feedback ab
 Requires Node>=7.
 
 ```
-npm install micro-wishes --save
+npm install microfeedback-core --save
 # OR
-yarn add micro-wishes
+yarn add microfeedback-core
 ```
 
 ## Usage
 
-The `micro-wishes` function is the only public API. It takes a *backend* function which contains the code to handle user feedback (e.g. post a GitHub issue, send an email) sent from a client. The second argument, `attributes`, is an `Object` that describes the backend (e.g. `name`, `version`, `description`).
+The `microfeedback` function is the only public API. It takes a *backend* function which contains the code to handle user feedback (e.g. post a GitHub issue, send an email) sent from a client. The second argument, `attributes`, is an `Object` that describes the backend (e.g. `name`, `version`, `description`).
 
 The first argument to the *backend* function is the parsed client input which will contain--at a minimum--an entry named `body` with the feedback content. The *backend* function also receives the request (`req`) and response (`res`) objects. See the [node http docs](https://nodejs.org/api/http.html) for more information about these objects.
 
-The `micro-wishes` function returns a [micro](https://github.com/zeit/micro) request handler.
+The `microfeedback` function returns a [micro](https://github.com/zeit/micro) request handler.
 
 
 ```javascript
 // index.js
 const { createError } = require('micro');
-const wishes = require('micro-wishes');
+const microfeedback = require('microfeedback');
 const sendEmail = require('./email-library');
 
 const EmailBackend = async ({ name, body }, req, res) => {
   const email = process.env.FEEDBACK_EMAIL;  // where to receive feedback
-  const subject = `[wishes] Feedback from ${name}`;
+  const subject = `[microfeedback] Feedback from ${name}`;
   const content = `${name} posted feedback on your app:
 
 ${body}
 
 Cheers,
-The Wishes Robot`;
+The microfeedback Robot`;
   try {
     const result = await sendEmail(email, { subject, content });
     return { status: result.status };
@@ -50,7 +50,7 @@ The Wishes Robot`;
   }
 };
 
-module.exports = wishes(EmailBackend, {
+module.exports = microfeedback(EmailBackend, {
   name: 'email',
   version: '1.0.0',
 });
@@ -60,10 +60,10 @@ The service can then be run with the `micro` CLI via `npm start`.
 
 ```json
 {
-  "name": "micro-wishes-email",
+  "name": "microfeedback-email",
   "dependencies": {
     "micro": "x.y.z",
-    "micro-wishes": "x.y.z"
+    "microfeedback-core": "x.y.z"
   },
   "main": "index.js",
   "scripts": {
@@ -78,7 +78,7 @@ npm start
 
 ## Backends
 
-- [micro-wishes-github](https://github.com/wishesjs/micro-wishes-github)
+- [microfeedback-github](https://github.com/microfeedback/microfeedback-github)
 
 ## Development
 

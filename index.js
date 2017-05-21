@@ -34,7 +34,7 @@ const handleErrors = fn => async (req, res) => {
 module.exports = (backend, attributes) => visualize(handleErrors(cors(async (req, res) => {
   if (req.method === 'GET') {
     const response = {
-      message: 'Welcome to the wishes API. Send a POST ' +
+      message: 'Welcome to the microfeedback API. Send a POST ' +
               'request to this URL to post a new wish.',
       core: {
         version: pkg.version,
