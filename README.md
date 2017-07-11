@@ -1,5 +1,7 @@
 # microfeedback-core
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/microfeedback/microfeedback-core.svg)](https://greenkeeper.io/)
+
 [![Build Status](https://travis-ci.org/microfeedback/microfeedback-core.svg?branch=master)](https://travis-ci.org/microfeedback/microfeedback-core)
 
 Core library for building microfeedback backends.
