@@ -46,7 +46,7 @@ The microfeedback Robot`;
     const result = await sendEmail(email, { subject, content });
     return { status: result.status };
   } catch (err) {
-    throw new createError(400, 'Could not send email', err);
+    throw createError(400, 'Could not send email', err);
   }
 };
 
