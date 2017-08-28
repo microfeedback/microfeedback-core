@@ -1,6 +1,5 @@
 const { send, json, createError } = require('micro');
 const microCors = require('micro-cors');
-const visualize = require('micro-visualize');
 const pkg = require('./package.json');
 
 const cors = microCors({ allowMethods: ['GET', 'POST', 'OPTIONS'] });
@@ -31,11 +30,11 @@ const handleErrors = fn => async (req, res) => {
  *  parsed input JSON from the client.
  * @param Object attributes: Optional attributes about the backend, e.g. name, version.
  */
-module.exports = (backend, attributes) => visualize(handleErrors(cors(async (req, res) => {
+module.exports = (backend, attributes) => handleErrors(cors(async (req, res) => {
   if (req.method === 'GET') {
     const response = {
       message: 'Welcome to the microfeedback API. Send a POST ' +
-              'request to this URL to post a new wish.',
+      'request to this URL to post a new wish.',
       core: {
         version: pkg.version,
       },
@@ -47,7 +46,7 @@ module.exports = (backend, attributes) => visualize(handleErrors(cors(async (req
   } else if (req.method === 'POST') {
     const input = await json(req);
     if (!input.body) {
-      throw new createError(429, '"body" is required in request payload');
+      throw createError(429, '"body" is required in request payload');
     }
     const result = await backend(input, req, res);
     const responseData = { result };
@@ -56,6 +55,6 @@ module.exports = (backend, attributes) => visualize(handleErrors(cors(async (req
     }
     send(res, 201, responseData);
   } else {
-    throw new createError(405, `Method ${req.method} not allowed.`);
+    throw createError(405, `Method ${req.method} not allowed.`);
   }
-})), process.env.NODE_ENV);
+}));

@@ -72,7 +72,7 @@ test('POST: no issue body given', async (t) => {
 
 test('POST: error thrown by backend', async (t) => {
   const ErrorBackend = () => {
-    throw new micro.createError(400, 'Error thrown by backend');
+    throw micro.createError(400, 'Error thrown by backend');
   };
   const { url } = await maketestService(ErrorBackend);
   const payload = { name: 'steve', body: 'wat' };

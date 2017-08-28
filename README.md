@@ -16,8 +16,6 @@ Requires Node>=7.
 
 ```
 npm install microfeedback-core --save
-# OR
-yarn add microfeedback-core
 ```
 
 ## Usage
@@ -85,7 +83,7 @@ npm start
 ## Development
 
 * Fork and clone this repo. `cd` into the project directory.
-* `yarn install`
+* `npm install`
 * To run tests: `npm test`
 * To run the example server with auto-reloading: `npm run dev`
 
@@ -94,7 +92,7 @@ npm start
 Add `debugger` statements, then run the following:
 
 ```
-yarn global add iron-node
+npm install -i iron-node
 npm run test:debug
 ```
 
