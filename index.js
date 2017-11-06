@@ -34,7 +34,7 @@ module.exports = (backend, attributes) => handleErrors(cors(async (req, res) => 
   if (req.method === 'GET') {
     const response = {
       message: 'Welcome to the microfeedback API. Send a POST ' +
-      'request to this URL to post a new wish.',
+      'request to this URL to send feedback.',
       core: {
         version: pkg.version,
       },
