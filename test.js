@@ -66,7 +66,12 @@ test('POST: response format', async (t) => {
 test('POST: no issue body given', async (t) => {
   const { url } = await maketestService();
   const body = { name: 'steve' };
-  const response = await request({ uri: url, method: 'POST', body, simple: false });
+  const response = await request({
+    uri: url,
+    method: 'POST',
+    body,
+    simple: false,
+  });
   t.is(response.statusCode, 429);
 });
 
@@ -76,7 +81,12 @@ test('POST: error thrown by backend', async (t) => {
   };
   const { url } = await maketestService(ErrorBackend);
   const payload = { name: 'steve', body: 'wat' };
-  const { body, statusCode } = await request({ uri: url, method: 'POST', body: payload, simple: false });
+  const { body, statusCode } = await request({
+    uri: url,
+    method: 'POST',
+    body: payload,
+    simple: false,
+  });
   t.is(statusCode, 400);
   t.deepEqual(body, { status: 400, message: 'Error thrown by backend' });
 });
@@ -84,6 +94,11 @@ test('POST: error thrown by backend', async (t) => {
 test('PUT not supported', async (t) => {
   const { url } = await maketestService();
   const body = { name: 'steve', body: 'wat' };
-  const response = await request({ uri: url, method: 'PUT', body, simple: false });
+  const response = await request({
+    uri: url,
+    method: 'PUT',
+    body,
+    simple: false,
+  });
   t.is(response.statusCode, 405);
 });
