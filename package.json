@@ -34,7 +34,7 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.2.0",
     "micro": "^9.0.0",
-    "micro-dev": "^1.2.2",
+    "micro-dev": "^2.0.0",
     "request-promise": "^4.2.0",
     "test-listen": "^1.0.2"
   },
