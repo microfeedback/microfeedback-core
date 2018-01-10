@@ -23,7 +23,8 @@
     "dev": "micro-dev example.js",
     "test": "npm run lint && NODE_ENV=test ava",
     "test:debug": "NODE_ENV=test iron-node ./node_modules/ava/profile.js test.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "release": "np"
   },
   "dependencies": {
     "micro-cors": "^0.1.0"
@@ -35,6 +36,7 @@
     "eslint-plugin-import": "^2.2.0",
     "micro": "^9.0.0",
     "micro-dev": "^2.2.0",
+    "np": "^2.18.3",
     "request-promise": "^4.2.0",
     "test-listen": "^1.0.2"
   },
