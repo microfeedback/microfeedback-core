@@ -72,7 +72,7 @@ test('POST: no issue body given', async (t) => {
     body,
     simple: false,
   });
-  t.is(response.statusCode, 429);
+  t.is(response.statusCode, 422);
 });
 
 test('POST: error thrown by backend', async (t) => {

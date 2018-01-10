@@ -46,7 +46,7 @@ module.exports = (backend, attributes) => handleErrors(cors(async (req, res) => 
   } else if (req.method === 'POST') {
     const input = await json(req);
     if (!input.body) {
-      throw createError(429, '"body" is required in request payload');
+      throw createError(422, '"body" is required in request payload');
     }
     const result = await backend(input, req, res);
     const responseData = { result };
