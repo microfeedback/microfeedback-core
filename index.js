@@ -37,7 +37,7 @@ module.exports = (backend, attributes) =>
         const response = {
           message:
             'Welcome to the microfeedback API. Send a POST ' +
-            'request to this URL to send feedback.',
+            'request to send feedback.',
           core: {
             version: pkg.version,
           },
