@@ -1,6 +1,11 @@
 {
   "name": "microfeedback-core",
   "description": "The core library for creating microfeedback backends.",
+  "author": {
+    "name": "Steven Loria",
+    "email": "sloria1@gmail.com",
+    "url": "stevenloria.com"
+  },
   "repository": "microfeedback/microfeedback-core",
   "version": "1.2.2",
   "main": "index.js",
@@ -10,7 +15,7 @@
     "example.js"
   ],
   "engines": {
-    "node": ">=7"
+    "node": ">=8"
   },
   "keywords": [
     "micro",
