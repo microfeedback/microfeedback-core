@@ -7,14 +7,14 @@ const microfeedback = require('./');
  * name is the optional name of the user and
  * body (required) is the content of the feedback.
  */
-const ConsoleBackend = ({ name, body }) => {
+const ConsoleBackend = ({name, body}) => {
   if (name) {
     console.log(`Feedback from: ${name}`);
   }
   console.log(body);
   // All backends must return a promise
   // that resolves to the data to respond with
-  return Promise.resolve({ name, body });
+  return Promise.resolve({name, body});
 };
 
 module.exports = microfeedback(ConsoleBackend, {

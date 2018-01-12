@@ -23,7 +23,7 @@
     "dev": "micro-dev example.js",
     "test": "npm run lint && NODE_ENV=test ava",
     "test:debug": "NODE_ENV=test iron-node ./node_modules/ava/profile.js test.js",
-    "lint": "eslint .",
+    "lint": "xo",
     "release": "np"
   },
   "dependencies": {
@@ -31,16 +31,33 @@
   },
   "devDependencies": {
     "ava": "^0.24.0",
-    "eslint": "^4.2.0",
-    "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.2.0",
     "micro": "^9.0.0",
     "micro-dev": "^2.2.0",
     "np": "^2.18.3",
     "request-promise": "^4.2.0",
-    "test-listen": "^1.0.2"
+    "test-listen": "^1.0.2",
+    "xo": "^0.18.2"
   },
   "peerDependencies": {
     "micro": "^9.0.0"
+  },
+  "xo": {
+    "envs": [
+      "node"
+    ],
+    "space": true,
+    "rules": {
+      "no-warning-comments": 0,
+      "comma-dangle": [
+        "error",
+        {
+          "arrays": "always-multiline",
+          "objects": "always-multiline",
+          "imports": "always-multiline",
+          "exports": "always-multiline",
+          "functions": "never"
+        }
+      ]
+    }
   }
 }
