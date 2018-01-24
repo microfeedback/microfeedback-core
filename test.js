@@ -6,9 +6,8 @@ const pkg = require('./package.json');
 
 const makeService = require('./');
 
-/* Mocked GitHub strategy */
-const MockBackend = ({name, body}) =>
-  Promise.resolve({name, body, message: 'testing'});
+const MockBackend = ({input}) =>
+  Promise.resolve({name: input.name, body: input.body, message: 'testing'});
 
 /**
  * Thin wrapper around request-promise

@@ -11,7 +11,7 @@ In short: an easily-deployable HTTP microservice for collecting user feedback ab
 
 ## Installation
 
-Requires Node>=7.
+Requires Node>=8.
 
 ```
 npm install microfeedback-core --save
@@ -19,9 +19,17 @@ npm install microfeedback-core --save
 
 ## Usage
 
-The `microfeedback` function is the only public API. It takes a *backend* function which contains the code to handle user feedback (e.g. post a GitHub issue, send an email) sent from a client. The second argument, `attributes`, is an `Object` that describes the backend (e.g. `name`, `version`, `description`).
+The `microfeedback` function is the only public API. It takes a *backend* function which contains the code to handle user feedback (e.g. post a GitHub issue, send an email) sent from a client.
+The second argument, `attributes`, is an `Object` that describes the backend (e.g. `name`, `version`, `description`).
 
-The first argument to the *backend* function is the parsed client input which will contain--at a minimum--an entry named `body` with the feedback content. The *backend* function also receives the request (`req`) and response (`res`) objects. See the [node http docs](https://nodejs.org/api/http.html) for more information about these objects.
+The first argument to the *backend* function
+contains the `input` which will contain--at a minimum--an entry named `body` with the feedback content.
+If the `PERSPECTIVE_API_KEY` environment variable is set, the first
+argument will also contain a `perspective` Object with information
+returned from the [Perspective API](https://www.perspectiveapi.com/).
+
+The *backend* function also receives the request (`req`) and response (`res`) objects.
+See the [node http docs](https://nodejs.org/api/http.html) for more information about these objects.
 
 The `microfeedback` function returns a [micro](https://github.com/zeit/micro) request handler.
 
@@ -32,17 +40,21 @@ const { createError } = require('micro');
 const microfeedback = require('microfeedback');
 const sendEmail = require('./email-library');
 
-const EmailBackend = async ({ name, body }, req, res) => {
+const EmailBackend = async ({input, perspective}, req, res) => {
+  const {name, body} = input;
+  const toxicity = perspective ? perspective.toxicity : null;
   const email = process.env.FEEDBACK_EMAIL;  // where to receive feedback
-  const subject = `[microfeedback] Feedback from ${name}`;
+  const subject = '[microfeedback] Feedback posted' + name ? `by ${name}` : '';
   const content = `${name} posted feedback on your app:
 
 ${body}
 
+${toxicity ? `Toxicity rating: ${toxicity}` : ''}
+
 Cheers,
 The microfeedback Robot`;
   try {
-    const result = await sendEmail(email, { subject, content });
+    const result = await sendEmail(email, {subject, content});
     return { status: result.status };
   } catch (err) {
     throw createError(400, 'Could not send email', err);

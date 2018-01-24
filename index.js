@@ -1,8 +1,11 @@
 const {send, json, createError} = require('micro');
+const Perspective = require('perspective-api-client');
 const microCors = require('micro-cors');
 const pkg = require('./package.json');
 
 const cors = microCors({allowMethods: ['GET', 'POST', 'OPTIONS']});
+
+const perspectiveEnabled = Boolean(process.env.PERSPECTIVE_API_KEY && process.env.PERSPECTIVE_ENABLED !== 'false');
 
 /**
  * Catch errors from the wrapped function.
@@ -40,6 +43,7 @@ module.exports = (backend, attributes) =>
             'request to send feedback.',
           core: {
             version: pkg.version,
+            perspectiveEnabled,
           },
         };
         if (attributes) {
@@ -51,7 +55,14 @@ module.exports = (backend, attributes) =>
         if (!input.body) {
           throw createError(422, '"body" is required in request payload');
         }
-        const result = await backend(input, req, res);
+        let perspective = null;
+        if (perspectiveEnabled) {
+          const perspectiveClient = new Perspective(({apiKey: process.env.PERSPECTIVE_API_KEY}));
+          const response = await perspectiveClient.analyze(input.body, {truncate: true});
+          const toxicity = response.attributeScores.TOXICITY.summaryScore.value;
+          perspective = {toxicity};
+        }
+        const result = await backend({input, perspective}, req, res);
         const responseData = {result};
         if (attributes) {
           responseData.backend = attributes;
