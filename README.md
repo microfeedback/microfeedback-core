@@ -51,7 +51,7 @@ const { createError } = require('micro');
 const microfeedback = require('microfeedback');
 const sendEmail = require('./email-library');
 
-const EmailBackend = async ({input, perspective}, req, res) => {
+const EmailBackend = async ({input, perspective, akismet}, req, res) => {
   const {name, body} = input;
   const toxicity = perspective ? perspective.toxicity : null;
   const email = process.env.FEEDBACK_EMAIL;  // where to receive feedback
