@@ -7,7 +7,7 @@ const microfeedback = require('./');
  * name is the optional name of the user and
  * body (required) is the content of the feedback.
  */
-const ConsoleBackend = ({input, perspective}) => {
+const ConsoleBackend = ({input, perspective, akismet}) => {
   const {name, body} = input;
   const response = {name, body};
   if (name) {
@@ -17,6 +17,11 @@ const ConsoleBackend = ({input, perspective}) => {
     const {toxicity} = perspective;
     console.log(`Toxicity (from Perspective API): ${toxicity}`);
     response.toxicity = toxicity;
+  }
+  if (akismet) {
+    const {spam} = akismet;
+    console.log(`Is spam (from Akismet API): ${spam}`);
+    response.spam = spam;
   }
   console.log(body);
   // All backends must return a promise

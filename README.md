@@ -24,9 +24,20 @@ The second argument, `attributes`, is an `Object` that describes the backend (e.
 
 The first argument to the *backend* function
 contains the `input` which will contain--at a minimum--an entry named `body` with the feedback content.
+
 If the `PERSPECTIVE_API_KEY` environment variable is set, the first
-argument will also contain a `perspective` Object with information
+argument will contain a `perspective` Object with information
 returned from the [Perspective API](https://www.perspectiveapi.com/).
+
+If the `AKISMET_API_KEY` environment variable is set, input will be
+checked with the Akismet API. If spam is detected, an error response
+will be returned. If the `ALLOW_SPAM` environment variable is set, an
+error response will not be returned and the first argument to the
+backend will contain an `akismet` Object of the form `{spam: Boolean}`.
+
+Perspective and Akismet support can be disabled by setting
+`PERSPECTIVE_ENABLED=false` and `AKISMET_ENABLED=false` in the
+environment.
 
 The *backend* function also receives the request (`req`) and response (`res`) objects.
 See the [node http docs](https://nodejs.org/api/http.html) for more information about these objects.

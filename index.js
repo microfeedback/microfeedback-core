@@ -1,4 +1,5 @@
 const {send, json, createError} = require('micro');
+const akismetAPI = require('akismet-api');
 const Perspective = require('perspective-api-client');
 const microCors = require('micro-cors');
 const pkg = require('./package.json');
@@ -6,6 +7,7 @@ const pkg = require('./package.json');
 const cors = microCors({allowMethods: ['GET', 'POST', 'OPTIONS']});
 
 const perspectiveEnabled = Boolean(process.env.PERSPECTIVE_API_KEY && process.env.PERSPECTIVE_ENABLED !== 'false');
+const akismetEnabled = Boolean(process.env.AKISMET_API_KEY && process.env.AKISMET_ENABLED !== 'false');
 
 /**
  * Catch errors from the wrapped function.
@@ -44,6 +46,7 @@ module.exports = (backend, attributes) =>
           core: {
             version: pkg.version,
             perspectiveEnabled,
+            akismetEnabled,
           },
         };
         if (attributes) {
@@ -56,13 +59,34 @@ module.exports = (backend, attributes) =>
           throw createError(422, '"body" is required in request payload');
         }
         let perspective = null;
+        let akismet = null;
         if (perspectiveEnabled) {
           const perspectiveClient = new Perspective(({apiKey: process.env.PERSPECTIVE_API_KEY}));
           const response = await perspectiveClient.analyze(input.body, {truncate: true});
           const toxicity = response.attributeScores.TOXICITY.summaryScore.value;
           perspective = {toxicity};
         }
-        const result = await backend({input, perspective}, req, res);
+        if (akismetEnabled) {
+          const akismetClient = akismetAPI.client({
+            key: process.env.AKISMET_API_KEY,
+            blog: req.headers.origin,
+          });
+          /* eslint-disable camelcase */
+          const spam = await akismetClient.checkSpam({
+            user_ip: req.headers['remote-addr'],
+            user_agent: req.headers['user-agent'],
+            referrer: req.headers.referer,
+            comment_type: 'comment',
+            comment_content: input.body || '',
+          });
+          /* eslint-enable camelcase */
+          const allowSpam = Boolean(process.env.ALLOW_SPAM && process.env.ALLOW_SPAM !== 'false');
+          if (spam && !allowSpam) {
+            throw createError(400, 'Spam detected.');
+          }
+          akismet = {spam};
+        }
+        const result = await backend({input, perspective, akismet}, req, res);
         const responseData = {result};
         if (attributes) {
           responseData.backend = attributes;
