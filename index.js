@@ -62,29 +62,40 @@ module.exports = (backend, attributes) =>
         let akismet = null;
         if (perspectiveEnabled) {
           const perspectiveClient = new Perspective(({apiKey: process.env.PERSPECTIVE_API_KEY}));
-          const response = await perspectiveClient.analyze(input.body, {truncate: true});
-          const toxicity = response.attributeScores.TOXICITY.summaryScore.value;
-          perspective = {toxicity};
+          try {
+            const response = await perspectiveClient.analyze(input.body, {truncate: true});
+            const toxicity = response.attributeScores.TOXICITY.summaryScore.value;
+            perspective = {toxicity};
+          } catch (err) {
+            console.error(err.stack || err);
+          }
         }
         if (akismetEnabled) {
           const akismetClient = akismetAPI.client({
             key: process.env.AKISMET_API_KEY,
             blog: req.headers.origin,
           });
-          /* eslint-disable camelcase */
-          const spam = await akismetClient.checkSpam({
-            user_ip: req.headers['remote-addr'],
-            user_agent: req.headers['user-agent'],
-            referrer: req.headers.referer,
-            comment_type: 'comment',
-            comment_content: input.body || '',
-          });
-          /* eslint-enable camelcase */
-          const allowSpam = Boolean(process.env.ALLOW_SPAM && process.env.ALLOW_SPAM !== 'false');
-          if (spam && !allowSpam) {
-            throw createError(400, 'Spam detected.');
+          let spam = null;
+          try {
+            /* eslint-disable camelcase */
+            spam = await akismetClient.checkSpam({
+              user_ip: req.headers['remote-addr'],
+              user_agent: req.headers['user-agent'],
+              referrer: req.headers.referer,
+              comment_type: 'comment',
+              comment_content: input.body || '',
+            });
+            /* eslint-enable camelcase */
+          } catch (err) {
+            console.error(err.stack || err);
           }
-          akismet = {spam};
+          if (spam !== null) {
+            const allowSpam = Boolean(process.env.ALLOW_SPAM && process.env.ALLOW_SPAM !== 'false');
+            if (spam && !allowSpam) {
+              throw createError(400, 'Spam detected.');
+            }
+            akismet = {spam};
+          }
         }
         const result = await backend({input, perspective, akismet}, req, res);
         const responseData = {result};
