@@ -4,7 +4,7 @@ const listen = require('test-listen');
 const rp = require('request-promise');
 const pkg = require('./package.json');
 
-const makeService = require('./');
+const makeService = require('.');
 
 const MockBackend = ({input}) =>
   Promise.resolve({name: input.name, body: input.body, message: 'testing'});

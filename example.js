@@ -1,4 +1,4 @@
-const microfeedback = require('./');
+const microfeedback = require('.');
 
 /**
  * An example backend that just logs to the console.
