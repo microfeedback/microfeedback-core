@@ -6,6 +6,7 @@ const microfeedback = require('.');
  * Input is of the form { name, body } where
  * name is the optional name of the user and
  * body (required) is the content of the feedback.
+ * @returns {Promise} The response payload.
  */
 const ConsoleBackend = ({input, perspective, akismet}) => {
   const {name, body} = input;

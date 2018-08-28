@@ -12,6 +12,9 @@ const akismetEnabled = Boolean(process.env.AKISMET_API_KEY && process.env.AKISME
 /**
  * Catch errors from the wrapped function.
  * If any errors are caught, a JSON response is generated for that error.
+ *
+ * @param {function} fn: The handler function.
+ * @returns {function} Decorated handler function.
  */
 const handleErrors = fn => async (req, res) => {
   try {
@@ -31,9 +34,10 @@ const handleErrors = fn => async (req, res) => {
 /**
  * Factory for a micro handler containing the main routing logic.
  *
- * @param Function backend: The backend to use for the service. The backend receives the
+ * @param {function} backend: The backend to use for the service. The backend receives the
  *  parsed input JSON from the client.
- * @param Object attributes: Optional attributes about the backend, e.g. name, version.
+ * @param {object} attributes: Optional attributes about the backend, e.g. name, version.
+ * @return {function} Micro handler.
  */
 module.exports = (backend, attributes) =>
   handleErrors(

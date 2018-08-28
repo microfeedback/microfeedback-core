@@ -14,18 +14,24 @@ const MockBackend = ({input}) =>
  * that always resolves to a full response
  * object rather than just the response body
  * and automatically parses JSON respones.
+ *
+ * @param {object} options: Options passed to request-promise.
+ * @returns {Promise} The response.
  */
 const request = options => {
   const defaults = {
     resolveWithFullResponse: true,
     json: true,
   };
-  const opts = Object.assign({}, defaults, options);
+  const opts = {...defaults, ...options};
   return rp(opts);
 };
 
 /**
  * Make a mocked service.
+ *
+ * @param {object} backend: MicroFeedback backend.
+ * @returns {object} service and service URL.
  */
 const maketestService = async backend => {
   const handler = makeService(backend || MockBackend, {
