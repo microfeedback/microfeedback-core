@@ -19,14 +19,14 @@ const akismetEnabled = Boolean(process.env.AKISMET_API_KEY && process.env.AKISME
 const handleErrors = fn => async (req, res) => {
   try {
     return await fn(req, res);
-  } catch (err) {
-    if (process.env.NODE_ENV === 'dev' && err.stack) {
-      console.error(err.stack);
+  } catch (error) {
+    if (process.env.NODE_ENV === 'dev' && error.stack) {
+      console.error(error.stack);
     }
-    const status = err.statusCode || 500;
+    const status = error.statusCode || 500;
     send(res, status, {
       status,
-      message: err.message,
+      message: error.message,
     });
   }
 };
@@ -70,8 +70,8 @@ module.exports = (backend, attributes) =>
             const response = await perspectiveClient.analyze(input.body, {truncate: true});
             const toxicity = response.attributeScores.TOXICITY.summaryScore.value;
             perspective = {toxicity};
-          } catch (err) {
-            console.error(err.stack || err);
+          } catch (error) {
+            console.error(error.stack || error);
           }
         }
         if (akismetEnabled) {
@@ -90,8 +90,8 @@ module.exports = (backend, attributes) =>
               comment_content: input.body || '',
             });
             /* eslint-enable camelcase */
-          } catch (err) {
-            console.error(err.stack || err);
+          } catch (error) {
+            console.error(error.stack || error);
           }
           if (spam !== null) {
             const allowSpam = Boolean(process.env.ALLOW_SPAM && process.env.ALLOW_SPAM !== 'false');
