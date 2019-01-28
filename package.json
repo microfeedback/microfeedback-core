@@ -37,7 +37,7 @@
     "perspective-api-client": "^3.0.0"
   },
   "devDependencies": {
-    "ava": "^0.25.0",
+    "ava": "^1.2.0",
     "micro": "^9.0.0",
     "micro-dev": "^3.0.0",
     "np": "^3.0.0",
