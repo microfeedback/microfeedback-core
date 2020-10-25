@@ -32,7 +32,7 @@
     "release": "np"
   },
   "dependencies": {
-    "akismet-api": "^4.0.1",
+    "akismet-api": "^5.1.0",
     "micro-cors": "^0.1.0",
     "perspective-api-client": "^3.0.0"
   },
